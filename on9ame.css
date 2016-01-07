@@ -1,0 +1,64 @@
+body {
+	font-size: 12pt;
+}
+.row {
+	margin: 0px;
+}
+.win {
+	border: 3px green solid;
+	border-radius: 50%;
+}
+
+.loss {
+	border: 3px red solid;
+	border-radius: 50%;
+}
+
+.item, .kdaPara img {
+	border-radius: 10px;
+}
+
+.fluid-container {
+	padding: 10px;
+}
+
+body, .main {	
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-position: fixed;
+	background-size: cover;
+	margin: 0px;
+}
+
+#profileIcon {
+	margin-bottom: 10px;
+}
+
+#profileIcon img {
+	border-radius: 50%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#games, #buttons, #profile, .footer {
+	text-align: center;
+}
+
+.footer {
+	position: relative;
+	bottom: 0px;
+}
+
+#decayAlert {
+	font-size: 12px;
+	margin: 10px;
+	padding: 15px;
+}
+
+#alertIcon {
+	float: left;
+	width: 50px;
+	height: 50px;
+	margin-right: 10px;
+}
