@@ -139,6 +139,7 @@
 				.attr("src", "https://ddragon.leagueoflegends.com/cdn/" + itemRealm 
 						+ "/img/profileicon/" + profileIconId + ".png")
 				.addClass("img-responsive");
+		$("#profileIcon").empty();
 		$("#profileIcon").append(profileIcon);
 	}
 
@@ -228,6 +229,7 @@
 
 	function displayRank(id, response, region) {
 		var ranks = $("#profile");
+		ranks.empty();
 		for (var i = 0; i < response[id].length; i++) {
 			var type;
 			var lp = response[id][i]["entries"][0]["leaguePoints"];
@@ -285,6 +287,8 @@
 		});
 	}
 
+	var tries = 0;
+
 	function appendNameToImg(otherPlayers, listPlayers) {
 		$.ajax({
 			url: "getSummoners.php?list=" + listPlayers,
@@ -293,7 +297,12 @@
 				captionPlayers(otherPlayers, response);
 			},
 			error: function(xhr) {
-				$("#error").show().append($("<p>").html("There was an error setting summoner names."));
+				if (tries < 3) {
+					tries++;
+					setTimeout(function() { appendNameToImg(otherPlayers, listPlayers)}, 1000);
+				} else {
+					console.log("There was an error setting summoner names. " + tries + " tries.");
+				}
 			}
 		});
 	}
@@ -302,6 +311,7 @@
 		for (var j = 0; j < otherPlayers.length; j++) {
 			var id = otherPlayers[j];
 			var name = response[id]["name"];
+			$("." + id + " > p").remove();
 			$("." + id).append($("<p>")
 				.html(name)
 				.addClass("playerName"))
@@ -316,12 +326,16 @@
 		}
 	}
 
-	function insertSpell(spellID, i) {
+	function insertSpell(spellID, i, priOrSec) {
 		$.ajax({
 			url: "getSumID.php?id=" + spellID,
 			success: function(response) {
 				response = JSON.parse(response);
-				$("#sumSpells" + i).append($("<img>").attr("alt", "summoner spell").attr("src", "http://ddragon.leagueoflegends.com/cdn/" + itemRealm + "/img/spell/" + response["key"] + ".png"));
+				$("#spell" + i + priOrSec).remove();
+				$("#sumSpells" + i).append($("<img>")
+						.attr("id", "spell" + i + priOrSec)
+						.attr("alt", "summoner spell")
+						.attr("src", "http://ddragon.leagueoflegends.com/cdn/" + itemRealm + "/img/spell/" + response["key"] + ".png"));
 			},
 			error: function(xhr) {
 				$("#error").show().append($("<p>").html("Couldn't find summoner spells: " + spellID));
@@ -411,32 +425,32 @@
 			var champLevel = response["games"][i]["stats"]["level"];
 
 			// MAP NAME TITLE
-			$("#game" + i).append($("<h2>").html(mapName));
-			$("#game" + i).append($("<h2>").html(rankedSoloType));
+			$("#game" + i).append($("<h2>").addClass("mapName").html(mapName));
+			$("#game" + i).append($("<h2>").addClass("gameType").html(rankedSoloType));
 			var team = response["games"][i]["stats"]["team"];
 			var teamColor = (team == "100") ? "blue" : "purple";
 			var otherColor = (teamColor == "blue") ? "purple" : "blue";
 			var outcome = (response["games"][i]["stats"]["win"] == true) ? "win" : "loss";
-			$("#game" + i).append($("<h3>").html(outcome + " on " + teamColor + " side" ));
+			$("#game" + i).append($("<h3>").addClass("outcome").html(outcome + " on " + teamColor + " side" ));
 
 			// CREATE DATE
 			var createDate = response["games"][i]["createDate"];
 			var formatCreateDate = moment(createDate).format("MMMM DD, YYYY hh:mm a");
-			$("#game" + i).append($("<span>").html(formatCreateDate));
+			$("#game" + i).append($("<p>").addClass("date").html(formatCreateDate));
 
 
 			// SUMMONER SPELLS
 			var spell1 = response["games"][i]["spell1"];
 			var spell2 = response["games"][i]["spell2"];
 
-			var sumSpells = $("<div>").addClass("row").attr("id", "sumSpells" + i)
+			var sumSpells = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "sumSpells" + i)
 				.append($("<h3>").html("spells"));
-			insertSpell(spell1, i);
-			insertSpell(spell2, i);	
-			$("#game" + i).append(sumSpells);
+			insertSpell(spell1, i, "one");
+			insertSpell(spell2, i, "two");	
+			$("#game" + i).append($("<div>").addClass("row").append(sumSpells));
 
 			// ITEMS
-			var items = $("<div>").addClass("row").attr("id", "items" + i)
+			var items = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "items" + i)
 				.append($("<h3>").html("items"));
 			for (var k = 0; k < 7; k++) {
 				if (response["games"][i]["stats"]["item" + k]) {
@@ -445,7 +459,7 @@
 							.attr("alt", "item").addClass("item"));
 				}
 			}
-			$("#game" + i).append(items);
+			$("#game" + i).append($("<div>").addClass("row").append(items));
 
 			// STATS
 			var kills = (response["games"][i]["stats"]["championsKilled"] > 0) ? 
@@ -459,7 +473,7 @@
 				kda = kda.toFixed(2);
 			}
 
-			var stats = $("<div>").addClass("row").attr("id", "stats" + i)
+			var stats = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "stats" + i)
 				.append($("<h3>").html("stats"))
 				.append($("<p>").html("Kills: " + kills))
 				.append($("<p>").html("Deaths: " + deaths))
@@ -474,7 +488,6 @@
 					response["games"][i]["stats"]["quadraKills"] : 0;
 			var ptaKills = (response["games"][i]["stats"]["pentaKills"] > 0) ? 
 					response["games"][i]["stats"]["pentaKills"] : 0;
-
 
 			if (ptaKills > 0) {
 				var text = "PENTA KILL";
@@ -511,17 +524,17 @@
 				stats.append($("<p>").html(dblKills + " " + text));
 			}
 
-			$("#game" + i).append(stats);
+			$("#game" + i).append($("<div>").addClass("row").append(stats));
 
 			// GOLD
 			var goldEarned = response["games"][i]["stats"]["goldEarned"];
 			var goldSpent = response["games"][i]["stats"]["goldSpent"];
 
-			var gold = $("<div>").addClass("row").attr("id", "gold" + i)
+			var gold = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "gold" + i)
 				.append($("<h3>").html("gold"))
 				.append($("<p>").html("Gold earned: " + goldEarned))
 				.append($("<p>").html("Gold spent: " + goldSpent));
-			$("#game" + i).append(gold);
+			$("#game" + i).append($("<div>").addClass("row").append(gold));
 
 			// DAMAGE
 			var magicDamageDealtToChampions = response["games"][i]["stats"]["magicDamageDealtToChampions"];
@@ -534,7 +547,7 @@
 			var physicalDamageTaken = response["games"][i]["stats"]["physicalDamageTaken"];
 			var trueDamageTaken = response["games"][i]["stats"]["trueDamageTaken"];
 			var totalDamageTaken = response["games"][i]["stats"]["totalDamageTaken"];
-			var damage = $("<div>").addClass("row").attr("id", "damage" + i)
+			var damage = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "damage" + i)
 				.append($("<h3>").html("damage"))
 				.append($("<p>").html("Magic damage dealt to champions: " + magicDamageDealtToChampions))
 				.append($("<p>").html("Total magic damage dealt: " + magicDamageDealtPlayer))
@@ -546,8 +559,8 @@
 				.append($("<p>").html("Physical damage taken: " + physicalDamageTaken))
 				.append($("<p>").html("True damage taken: " + trueDamageTaken))
 				.append($("<p>").html("Total damage taken: " + totalDamageTaken));
-			$("#game" + i).append(damage);			
-
+			
+			$("#game" + i).append($("<div>").addClass("row").append(damage));
 
 			// WARDS
 			var wardPlace = (response["games"][i]["stats"]["wardPlaced"] > 0) ? 
@@ -560,7 +573,7 @@
 					response["games"][i]["stats"]["visionWardsBought"] : 0;
 
 			if (map != 12 && map != 14 && map != 10) {
-				var wards = $("<div>").addClass("row").attr("id", "wards" + i)
+				var wards = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "wards" + i)
 					.append($("<h3>").html("wards"));
 
 				if (wardBought == 0 && vWardBought == 0) {
@@ -573,7 +586,8 @@
 				wards.append($("<p>").html("Wards killed: " + wardKill))
 					.append($("<p>").html("Wards placed: " + wardPlace));
 					
-				$("#game" + i).append(wards);
+				$("#game" + i).append($("<div>").addClass("row").append(wards));
+
 			}
 
 			// CREEP SCORE
@@ -584,14 +598,16 @@
 					response["games"][i]["stats"]["neutralMinionsKilledYourJungle"] : 0;
 			var jungleMin = yourJung + otherJung;
 
-			var creepScore = $("<div>").addClass("row").attr("id", "creepScore" + i)
+			var creepScore = $("<div>").addClass("gameContent col-md-8 col-md-offset-2").attr("id", "creepScore" + i)
 				.append($("<h3>").html("creep score"))
 				.append($("<p>").html("Lane minions killed: " + laneMinions))
 				.append($("<p>").html("Own jungle minions killed: " + yourJung))
 				.append($("<p>").html("Enemy jungle minions countered: " + otherJung))
 				.append($("<p>").html("Total CS: " + (laneMinions + yourJung + otherJung)));
-			$("#game" + i).append(creepScore);
+			
+			$("#game" + i).append($("<div>").addClass("row").append(creepScore));
 
+			// APPEND ITEM IMAGES
 			for (var k = 0; k < 7; k++) {
 				if (response["games"][i]["stats"]["item" + k]) {
 					$("#items" + i).append($("<img>").attr("src", "http://ddragon.leagueoflegends.com/cdn/" 
@@ -668,7 +684,8 @@
 
 	function setGameImg(image, champId) {
 		image.attr("src", "http://ddragon.leagueoflegends.com/cdn/" 
-						+ champRealm + "/img/champion/" + champIdName[champId] + ".png")
+						+ champRealm + "/img/champion/" 
+						+ champIdName[champId] + ".png")
 			.attr("alt", "champion image");
 	}
 })();

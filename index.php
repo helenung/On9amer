@@ -4,7 +4,7 @@
 
 <html>
 	<head>
-		<title>on9a.me</title>
+		<title>On9amer</title>
 		<meta charset="utf-8" />
 
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -34,12 +34,12 @@
 	</head>
 
 	<body>
-		<div class="fluid-container">
+		<div class="container-fluid">
 			
 			<div class="row">
 				
 				<div class="col-lg-3 col-md-3 col-sm-3 sidebar">
-					<h1 id="header">on9a.me</h1>
+					<h1 id="header">On9amer</h1>
 					<div id="profileIcon" class="row">
 					</div>
 					<div class="row" id="buttons">
