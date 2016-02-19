@@ -1,0 +1,204 @@
+/* A stylesheet written by Helen Ung for the Summoner Data webpage */
+
+@font-face {
+	font-family: 'Fira';
+	src: url("../../fonts/FiraSans-Regular.otf"); 
+}
+
+#affiliation {
+	bottom: 0px;
+	color: white;
+	font-size: 10pt;
+	right: 0px;
+	text-align: center;
+	margin-top: 20px;
+}
+
+body {
+	background: url("summonersrift.jpg") no-repeat center center fixed; 
+	background-color: white;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-size: cover;
+	font-size: 12pt;
+	margin: 0px;
+}
+
+select {
+	text-transform: uppercase;
+}
+
+h1 {
+	font-size: 36pt;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+h2, h3 {
+	font-weight: normal;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+h2 {
+	font-size: 20pt;
+}
+
+div > h3 {
+	font-size: 16pt;
+}
+
+.kda {
+	font-size: 48px;
+}
+
+.kdaPara {
+	text-align: center;
+	font-size: 24px;
+}
+
+td {
+	text-align: center;
+	width: inherit;
+}
+
+td > h3 {
+	font-size: 14pt;
+	margin-left: -25px;
+}
+
+p {
+	margin-top: 10px;
+}
+
+div h2, td h3 {
+	text-transform: capitalize;
+}
+
+table img {
+	border-radius: 50%;
+}
+
+td {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+#bg {
+	background-color: rgba(255, 255, 255, .60);
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	width: 75%;
+	margin-left: auto;
+	margin-right: auto;
+	min-width: 800px;
+	padding: 5px;
+}
+
+#games {
+	text-align: center;
+}
+
+#content {
+	margin-top: 10px;
+}
+
+#error {
+	background-color: rgba(255, 255, 255, .60);
+	border-radius: 5px;
+	color: red;
+	font-size: 12px;
+	padding: 10px;
+	margin: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	width: 70%;
+}
+
+#games {
+	margin-top: 2em;
+}
+
+#submit {
+	font-size: 14pt;
+	font-weight: bold;
+	padding-top: 10px;
+	text-align: center;
+}
+
+.win {
+	border: 2px green solid;
+}
+
+.loss {
+	border: 2px red solid;
+}
+
+.item, .kdaPara img {
+	border-radius: 10px;
+}
+
+#rank {
+	text-align: center;
+}
+
+#profile {
+	background-color: rgba(255, 255, 255, .60);
+	border-radius: 10px;
+
+}
+
+#profile h2 {
+	text-align: center;
+}
+
+.rankStat {
+	display: inline-block;
+	font-size: 16px;
+	margin-left: 5px;
+	margin-right: 5px;
+	text-align: center;
+	min-width: 100px;
+}
+
+#row {
+	width: 70%;
+}
+
+table {
+	margin: 0px;
+	text-align: center;
+	width: 100%;
+}
+
+table h3 {
+	text-align: left;
+}
+
+.title {
+	font-size: 2em;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+}
+
+#header {
+	font-family: "Fira";
+	font-size: 3em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#rankSub {
+	font-family: "Fira";
+	font-size: 2em;
+	letter-spacing: 2px;
+	margin-top: 10px;
+}
+
+.intro {
+	text-align: center;
+}
