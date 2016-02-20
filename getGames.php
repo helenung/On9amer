@@ -9,7 +9,7 @@
 		header("HTTP/1.0 404 Not Found");
 		die();
 	} else {
-		header('Content-Type: application/json');
+		// header('Content-Type: application/json');
 		echo file_get_contents($file);
 	}
 ?>

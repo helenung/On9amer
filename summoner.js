@@ -9,6 +9,37 @@
 	var champIdName = [];
 	var otherPlayers = [];
 
+	var maps = {
+		1: "Summoner's Rift",
+		2: "Summoner's Rift",
+		3: "Proving Grounds",
+		4: "Twisted Treeline",
+		8: "The Crystal Scar",
+		10: "Twisted Treeline",
+		11: "Summoner's Rift",
+		12: "Howling Abyss",
+		14: "Butcher's Bridge"
+	};
+
+	var rankedOrSolo = {
+		"None": "Custom",
+		"NORMAL": "Classic",
+		"NORMAL_3x3": "Classic",
+		"ODIN_UNRANKED": "Classic",
+		"ARAM_UNRANKED_5x5": "Classic",
+		"BOT": "Bots",
+		"BOT_3x3": "Bots",
+		"RANKED_SOLO_5x5": "Ranked Solo",
+		"RANKED_TEAM_3x3": "Ranked Team",
+		"RANKED_TEAM_5x5": "Ranked Team",
+		"ONEFORALL_5x5": "One For All",
+		"CAP_5x5": "Team Builder",
+		"URF": "Urf",
+		"URF_BOT": "Urf Bots",
+		"BILGEWATER": "Black Market Brawlers",
+		"KING_PORO": "King Poro"
+	};
+
 	$(function() {
 		loadChampIdName();
 	});
@@ -53,8 +84,6 @@
 			$("#name").val(username);
 			$("input[name='enter']").click();
 		}
-
-		
 	}
 
 	function getData() {
@@ -102,7 +131,7 @@
 				displayProfile(id, region);
 				displayIcon(response[sumName]["profileIconId"]);
 				
-			//	getCurrent(response[sumName]["id"]);
+				// getCurrent(response[sumName]["id"]);
 			},
 			error: function(xhr) {
 				$("#error").show().append($("<p>").html("Summoner \"" + sumName + "\" could not be found"));
@@ -149,12 +178,12 @@
 			success: function(response) {
 				if (response != "") {
 					response = JSON.parse(response);
-					console.log(response);
 					showCurrent(response);
 				}
 			},
 			error: function(xhr) {
-				$("#error").show().append($("<p>").html("Error finding current game."));
+				//$("#error").show().append($("<p>").html("Error finding current game."));
+				console.log("Summoner not currently in game.");
 			}
 		});
 	}
@@ -216,7 +245,7 @@
 		$.ajax({ 
 			url: "getRankStats.php?id=" + id + "&region=" + region,
 			success: function(response) {
-				if (response) {
+				if (response && response != "") {
 					response = JSON.parse(response);
 					displayRank(id, response, region);
 				} 
@@ -371,50 +400,14 @@
 
 		for (var i = 0; i < 10; i++) {
 			var map = response["games"][i]["mapId"];
-			var mapName;
-			if (map == 1) {
+			var mapName = maps[map];
+			if (!mapName) {
 				mapName = "Summoner's Rift";
-			} else if (map == 2) {
-				mapName = "Summoner's Rift";
-			} else if (map == 3) {
-				mapName = "Proving Grounds";
-			} else if (map == 4) {
-				mapName = "Twisted Treeline";
-			} else if (map == 8) {
-				mapName = "The Crystal Scar";
-			} else if (map == 10) {
-				mapName = "Twisted Treeline";
-			} else if (map == 11) {
-				mapName = "Summoner's Rift";
-			} else if (map == 12) {
-				mapName = "Howling Abyss";
-			} else if (map == 14) {
-				mapName = "Butcher's Bridge";
 			}
 
 			var subType = response["games"][i]["subType"];
-			var rankedSoloType;
-			if (subType == "NONE") {
-				rankedSoloType = "Custom";
-			} else if ((subType == "NORMAL") || (subType == "NORMAL_3x3") || (subType == "ODIN_UNRANKED") || (subType == "ARAM_UNRANKED_5x5")) {
-				rankedSoloType = "Classic";	
-			} else if ((subType == "BOT") || (subType == "BOT_3x3")) {
-				rankedSoloType = "Bots";
-			} else if (subType == "RANKED_SOLO_5x5") {
-				rankedSoloType = "Ranked Solo";
-			} else if ((subType == "RANKED_TEAM_3x3") || (subType == "RANKED_TEAM_5x5")) {
-				rankedSoloType = "Ranked Team";	
-			} else if (subType == "ONEFORALL_5x5") {
-				rankedSoloType = "One for all";
-			} else if (subType == "CAP_5x5") {
-				rankedSoloType = "Team Builder";
-			} else if (subType == "URF") {
-				rankedSoloType = "Urf";
-			} else if (subType == "URF_BOT") {
-				rankedSoloType = "Urf Bots";
-			} else if (subType == "BILGEWATER") {
-				rankedSoloType = "Black Market Brawlers";
-			} else {
+			var rankedSoloType = rankedOrSolo[subType];
+			if (!rankedSoloType) {
 				rankedSoloType = subType;
 			}
 			var champId = response["games"][i]["championId"];
@@ -437,7 +430,6 @@
 			var createDate = response["games"][i]["createDate"];
 			var formatCreateDate = moment(createDate).format("MMMM DD, YYYY hh:mm a");
 			$("#game" + i).append($("<p>").addClass("date").html(formatCreateDate));
-
 
 			// SUMMONER SPELLS
 			var spell1 = response["games"][i]["spell1"];

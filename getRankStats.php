@@ -8,7 +8,7 @@
 	if($file_headers[0] != 'HTTP/1.1 200 OK') {
 		echo "";
 	} else {
-		header('Content-Type: application/json');
+		// header('Content-Type: application/json');
 		echo file_get_contents($file);
 	}
 ?>
